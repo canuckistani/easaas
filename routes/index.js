@@ -1,38 +1,30 @@
+var easy = require('../lib/easy');
 
-var F = require('util').format,
-  inflect = require('i')();
+exports.index = function(req, res) {
 
-/*
- * GET home page.
- */
+  // do we have a param?
+  var what = 'it', 
+    content_type = 'test/html',
+    content = easy.add_verb('it');
 
-function ez_baby(what) {
-
-  var C = function(s) { 
-    return s.charAt(0).toUpperCase() + s.slice(1); 
+  if (req.params.what) {
+    // console.log(req.params.what);
+    what = easy.get_content(req.params.what);
+    content_type = easy.get_content_type(req.params.what);
+    content = easy.add_verb(what);
   }
 
-  var _what;
-  if (what === 'it') {
-    _what = "It's";
+  // console.log(what, content_type, content);
+  res.set('Content-type', content_type);
+  switch(content_type) {
+    case 'application/json':
+      res.json({payload: content});
+      break;
+    case 'text/plain':
+      res.send(content);
+      break;
+    default:
+      res.render('index', {what: content});
+      break;
   }
-  else if (what == 'you' || what === 'are') {
-    _what = 'You are';
-  }
-  else if (what === 'I') {
-    _what = 'I am';
-  }
-  else {
-    _what = F('%s is', C(what));
-  }
-
-  return F('%s easy as shit.', _what);
-}
-
-exports.index = function(req, res){
-  res.render('index', { what: ez_baby('it') });
 };
-
-exports.what = function(req, res) {
-  res.render('index', { what: ez_baby(req.params.what) });
-}
