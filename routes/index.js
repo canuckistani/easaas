@@ -4,7 +4,7 @@ exports.index = function(req, res) {
 
   // do we have a param?
   var what = 'it', 
-    content_type = 'test/html',
+    content_type = 'text/html',
     content = easy.add_verb('it');
 
   if (req.params.what) {
